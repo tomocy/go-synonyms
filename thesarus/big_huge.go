@@ -27,23 +27,23 @@ type bigHugeWords struct {
 }
 
 func (h bigHuge) FetchSynonyms(term string) ([]string, error) {
-	syn := make([]string, 0)
+	syns := make([]string, 0)
 	endpoint := "http://words.bighugelabs.com/api/2/" + h.clientKey + "/" + term + "/json"
 	resp, err := http.Get(endpoint)
 	if err != nil {
-		return syn, fmt.Errorf("could not get the reponse from big huge: %s", err)
+		return syns, fmt.Errorf("could not get the reponse from big huge: %s", err)
 	}
 	defer resp.Body.Close()
 
 	var decodedResp bigHugeSynonyms
 	if err := json.NewDecoder(resp.Body).Decode(&decodedResp); err != nil {
 		if err != io.EOF {
-			return syn, fmt.Errorf("could not decode response body: %s", err)
+			return syns, fmt.Errorf("could not decode response body: %s", err)
 		}
 	}
 
-	syn = append(syn, decodedResp.Nouns.Syns...)
-	syn = append(syn, decodedResp.Verbs.Syns...)
+	syns = append(syns, decodedResp.Nouns.Syns...)
+	syns = append(syns, decodedResp.Verbs.Syns...)
 
-	return syn, nil
+	return syns, nil
 }
