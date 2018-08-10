@@ -20,8 +20,7 @@ func main() {
 			log.Fatalf("could not fetch synonyms: %s\n", err)
 		}
 		if len(syns) == 0 {
-			fmt.Println("there is no synonyms")
-			continue
+			log.Fatalln("there is no synonyms")
 		}
 		for _, syn := range syns {
 			fmt.Println(syn)
