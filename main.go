@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/tomocy/synonyms/thesarus"
 )
 
 func main() {
 	clientKey := os.Getenv("BHT_CLIENT_KEY")
-	bigHuge := bigHuge{
-		clientKey: clientKey,
-	}
+	bigHuge := thesarus.NewBigHuge(clientKey)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	for scanner.Scan() {
-		syns, err := bigHuge.fetchSynonyms(scanner.Text())
+		syns, err := bigHuge.FetchSynonyms(scanner.Text())
 		if err != nil {
 			log.Fatalf("could not fetch synonyms: %s\n", err)
 		}

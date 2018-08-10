@@ -1,4 +1,4 @@
-package main
+package thesarus
 
 import (
 	"encoding/json"
@@ -11,7 +11,22 @@ type bigHuge struct {
 	clientKey string
 }
 
-func (h bigHuge) fetchSynonyms(term string) ([]string, error) {
+func newBigHuge(clientKey string) *bigHuge {
+	return &bigHuge{
+		clientKey: clientKey,
+	}
+}
+
+type bigHugeSynonyms struct {
+	Nouns bigHugeWords `json:"noun"`
+	Verbs bigHugeWords `json:"verb"`
+}
+
+type bigHugeWords struct {
+	Syns []string `json:"syn"`
+}
+
+func (h bigHuge) FetchSynonyms(term string) ([]string, error) {
 	syn := make([]string, 0)
 	endpoint := "http://words.bighugelabs.com/api/2/" + h.clientKey + "/" + term + "/json"
 	resp, err := http.Get(endpoint)
@@ -20,15 +35,15 @@ func (h bigHuge) fetchSynonyms(term string) ([]string, error) {
 	}
 	defer resp.Body.Close()
 
-	var decodedResp synonyms
+	var decodedResp bigHugeSynonyms
 	if err := json.NewDecoder(resp.Body).Decode(&decodedResp); err != nil {
 		if err != io.EOF {
 			return syn, fmt.Errorf("could not decode response body: %s", err)
 		}
 	}
 
-	syn = append(syn, decodedResp.Noun.Syn...)
-	syn = append(syn, decodedResp.Verb.Syn...)
+	syn = append(syn, decodedResp.Nouns.Syns...)
+	syn = append(syn, decodedResp.Verbs.Syns...)
 
 	return syn, nil
 }

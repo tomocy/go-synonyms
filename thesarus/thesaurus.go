@@ -1,5 +1,9 @@
 package thesarus
 
 type Thesarus interface {
-	Synonyms(string) ([]string, error)
+	FetchSynonyms(string) ([]string, error)
+}
+
+func NewBigHuge(clientKey string) Thesarus {
+	return newBigHuge(clientKey)
 }
